@@ -58,7 +58,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1603542863326,
+  "iteration": 1604842950823,
   "links": [],
   "panels": [
     {
@@ -119,8 +119,9 @@
       "pluginVersion": "7.2.1",
       "targets": [
         {
-          "expr": "arangodb_server_statistics_server_uptime",
+          "expr": "arangodb_server_statistics_server_uptime{instance=~'$node'}",
           "format": "table",
+          "instant": false,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -178,7 +179,7 @@
       "pluginVersion": "7.2.1",
       "targets": [
         {
-          "expr": "arangodb_client_connection_statistics_client_connections",
+          "expr": "arangodb_client_connection_statistics_client_connections{instance=~'$node'}",
           "format": "table",
           "interval": "",
           "legendFormat": "",
@@ -237,7 +238,7 @@
       "pluginVersion": "7.2.1",
       "targets": [
         {
-          "expr": "arangodb_process_statistics_number_of_threads",
+          "expr": "arangodb_process_statistics_number_of_threads{instance=~'$node'}",
           "format": "table",
           "interval": "",
           "legendFormat": "",
@@ -311,7 +312,7 @@
       "pluginVersion": "7.2.1",
       "targets": [
         {
-          "expr": "arangodb_server_statistics_physical_memory",
+          "expr": "arangodb_server_statistics_physical_memory{instance=~'$node'}",
           "format": "table",
           "interval": "",
           "legendFormat": "",
@@ -368,7 +369,7 @@
       "pluginVersion": "7.2.1",
       "targets": [
         {
-          "expr": "arangodb_process_statistics_resident_set_size_percent",
+          "expr": "arangodb_process_statistics_resident_set_size_percent{instance=~'$node'}*100",
           "format": "table",
           "interval": "",
           "legendFormat": "Memory used %",
@@ -428,7 +429,7 @@
       "pluginVersion": "7.2.1",
       "targets": [
         {
-          "expr": "arangodb_process_statistics_virtual_memory_size",
+          "expr": "arangodb_process_statistics_virtual_memory_size{instance=~'$node'}",
           "format": "table",
           "interval": "",
           "legendFormat": "",
@@ -503,13 +504,13 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(arangodb_client_connection_statistics_bytes_received_sum[$Aggregate_Interval])",
+          "expr": "sum(increase(arangodb_client_connection_statistics_bytes_received_bucket{instance=~'$node'}[$interval]))",
           "interval": "",
           "legendFormat": "Bytes Received",
           "refId": "A"
         },
         {
-          "expr": "increase(arangodb_client_connection_statistics_bytes_sent_sum[$Aggregate_Interval])",
+          "expr": "sum(increase(arangodb_client_connection_statistics_bytes_sent_bucket{instance=~'$node'}[$interval]))",
           "interval": "",
           "legendFormat": "Bytes Sent",
           "refId": "B"
@@ -605,27 +606,32 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(arangodb_http_request_statistics_http_post_requests{instance=\"15.1.134.30:9101\"}[$Aggregate_Interval])",
+          "expr": "increase(arangodb_http_request_statistics_http_post_requests{instance=~'$node'}[$interval])",
           "format": "time_series",
+          "hide": false,
           "interval": "",
+          "intervalFactor": 1,
           "legendFormat": "POST requests",
           "refId": "A"
         },
         {
-          "expr": "increase(arangodb_http_request_statistics_http_get_requests{instance=\"15.1.134.30:9101\"}[$Aggregate_Interval])",
+          "expr": "increase(arangodb_http_request_statistics_http_get_requests{instance=~'$node'}[$interval])",
           "format": "time_series",
+          "hide": false,
           "interval": "",
           "legendFormat": "GET requests",
           "refId": "B"
         },
         {
-          "expr": "increase(arangodb_http_request_statistics_http_put_requests{instance=\"15.1.134.30:9101\"}[$Aggregate_Interval])",
+          "expr": "increase(arangodb_http_request_statistics_http_put_requests{instance=~'$node'}[$interval])",
+          "hide": false,
           "interval": "",
           "legendFormat": "PUT requests",
           "refId": "C"
         },
         {
-          "expr": "increase(arangodb_http_request_statistics_http_delete_requests{instance=\"15.1.134.30:9101\"}[$Aggregate_Interval])",
+          "expr": "increase(arangodb_http_request_statistics_http_delete_requests{instance=~'$node'}[$interval])",
+          "hide": false,
           "interval": "",
           "legendFormat": "DELETE requests",
           "refId": "D"
@@ -722,7 +728,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(arangodb_scheduler_queue_length[$Aggregate_Interval])",
+          "expr": "increase(arangodb_scheduler_queue_length{instance=~'$node'}[$interval])",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -819,7 +825,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(arangodb_transactions_aborted[$Aggregate_Interval])",
+          "expr": "increase(arangodb_transactions_aborted{instance=~'$node'}[$interval])",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -875,7 +881,7 @@
       "fieldConfig": {
         "defaults": {
           "custom": {},
-          "unit": "s"
+          "unit": "ms"
         },
         "overrides": []
       },
@@ -915,8 +921,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(arangodb_client_connection_statistics_request_time_sum[$Aggregate_Interval])/increase(arangodb_http_request_statistics_total_requests[$Aggregate_Interval])",
+          "expr": "sum(increase(arangodb_client_connection_statistics_request_time_bucket[$interval]))/sum(increase(arangodb_http_request_statistics_total_requests[$interval]))",
+          "format": "time_series",
           "interval": "",
+          "intervalFactor": 1,
           "legendFormat": "Avg request time",
           "refId": "A"
         }
@@ -941,7 +949,7 @@
       },
       "yaxes": [
         {
-          "format": "s",
+          "format": "ms",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -973,16 +981,16 @@
         "auto_count": 30,
         "auto_min": "10s",
         "current": {
-          "selected": false,
-          "text": "1m",
-          "value": "1m"
+          "selected": true,
+          "text": "6h",
+          "value": "6h"
         },
         "hide": 0,
         "label": null,
-        "name": "Aggregate_Interval",
+        "name": "interval",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "1m",
             "value": "1m"
           },
@@ -1007,7 +1015,7 @@
             "value": "1h"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "6h",
             "value": "6h"
           }
@@ -1017,6 +1025,28 @@
         "refresh": 2,
         "skipUrlSync": false,
         "type": "interval"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
+        "definition": "label_values(arangodb_heartbeat_failures,instance)",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "node",
+        "options": [],
+        "query": "label_values(arangodb_heartbeat_failures,instance)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   },
@@ -1028,5 +1058,5 @@
   "timezone": "",
   "title": "ArangoDB monitoring",
   "uid": "RoN4NP5Gz",
-  "version": 11
+  "version": 20
 }
